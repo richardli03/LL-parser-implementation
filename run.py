@@ -1,43 +1,11 @@
-from enum import Enum
-
-# All constants are indexed from 0
-TERM = 0
-RULE = 1
-
-
-# Terminals
-class Terminals(Enum):
-    LPAR = 0
-    RPAR = 1
-    A = 2
-    PLUS = 3
-    END = 4
-    INVALID = 5
-
-
-# Non-Terminals
-class Nonterminals(Enum):
-    S = 0
-    F = 1
-
-
-RULES = [
-    [(RULE, Nonterminals.F)],
-    [
-        (TERM, Terminals.LPAR),
-        (RULE, Nonterminals.S),
-        (TERM, Terminals.PLUS),
-        (RULE, Nonterminals.F),
-        (TERM, Terminals.RPAR),
-    ],
-    [(TERM, Terminals.A)],
-]
+from table import calculate_first_sets, calculate_follow_sets, construct_parsing_table
+from constants import TERM, RULE, Terminals, Nonterminals, RULES
 
 stack = [(TERM, Terminals.END), (RULE, Nonterminals.S)]
 
 
 class LLParse:
-    def __init__(self) -> None:
+    def __init__(self, table: [list[int]]) -> None:
         # Parse table
         self.table = [[1, -1, 0, -1, -1, -1], [-1, -1, 2, -1, -1, -1]]
 
@@ -99,5 +67,9 @@ class LLParse:
 
 if __name__ == "__main__":
     inputstring = "(a+a)"
-    parser = LLParse()
+    first_sets = calculate_first_sets(RULES)
+    follow_sets = calculate_follow_sets(RULES, first_sets)
+    parsing_table = construct_parsing_table(RULES, first_sets, follow_sets)
+
+    parser = LLParse(parsing_table)
     parser.syntactic_analysis(parser.lexical_analysis(inputstring))
