@@ -2,15 +2,9 @@ from typing import Union, List, Tuple, Set
 from constants import TERM, RULE, Terminals, Nonterminals, RULES
 
 
-def calculate_first_sets(rules: List[List[Tuple[int, Union[Terminals, Nonterminals]]]]):
-    """
-    Calculate the FIRST sets for each rule in a given set of rules.
-
-    :param rules: List of rules, where each rule is represented as a list of tuples.
-    :type rules: List[List[Tuple[int, Union[Terminals, Nonterminals]]]]
-    :return: List of sets representing the FIRST set for each rule.
-    :rtype: List[Set[Union[Terminals, Nonterminals]]]
-    """
+def calculate_first_sets(
+    rules: List[List[Tuple[int, Union[Terminals, Nonterminals]]]]
+) -> List[Set[Union[Terminals, Nonterminals]]]:
     first_sets = [set() for _ in range(len(rules))]
 
     while True:
@@ -22,11 +16,10 @@ def calculate_first_sets(rules: List[List[Tuple[int, Union[Terminals, Nontermina
                     first_sets[i].add(symbol_value)
                     break
                 elif symbol_type == RULE:
-                    first_sets[i] |= first_sets[symbol_value.value]  # Fix here
+                    first_sets[i] |= first_sets[symbol_value.value]
                     if Terminals.END not in first_sets[symbol_value.value]:
                         break
             else:
-                # Executed if the loop did NOT break
                 first_sets[i].add(Terminals.END)
 
         if old_first_sets == first_sets:
@@ -35,14 +28,10 @@ def calculate_first_sets(rules: List[List[Tuple[int, Union[Terminals, Nontermina
     return first_sets
 
 
-def calculate_follow_sets(rules, first_sets):
-    """
-    Calculate the FOLLOW sets for each rule in a given set of rules using the calculated FIRST sets.
-
-    :param rules: List of rules, where each rule is represented as a list of tuples.
-    :param first_sets: List of sets representing the FIRST set for each rule.
-    :return: List of sets representing the FOLLOW set for each rule.
-    """
+def calculate_follow_sets(
+    rules: List[List[Tuple[int, Union[Terminals, Nonterminals]]]],
+    first_sets: List[Set[Union[Terminals, Nonterminals]]],
+) -> List[Set[Union[Terminals, Nonterminals]]]:
     follow_sets = [set() for _ in range(len(rules))]
     follow_sets[Nonterminals.S.value].add(Terminals.END)
 
@@ -71,16 +60,11 @@ def calculate_follow_sets(rules, first_sets):
     return follow_sets
 
 
-def construct_parsing_table(rules, first_sets, follow_sets):
-    """
-    Construct the LL(1) parsing table for a given set of rules using the calculated FIRST and FOLLOW sets.
-
-    :param rules: List of rules, where each rule is represented as a list of tuples.
-    :param first_sets: List of sets representing the FIRST set for each rule.
-    :param follow_sets: List of sets representing the FOLLOW set for each rule.
-    :return: 2D list representing the LL(1) parsing table.
-    """
-
+def construct_parsing_table(
+    rules: List[List[Tuple[int, Union[Terminals, Nonterminals]]]],
+    first_sets: List[Set[Union[Terminals, Nonterminals]]],
+    follow_sets: List[Set[Union[Terminals, Nonterminals]]],
+) -> List[List[int]]:
     parsing_table = [[-1] * len(Terminals) for _ in range(len(rules))]
 
     for i, rule in enumerate(rules):
@@ -88,10 +72,8 @@ def construct_parsing_table(rules, first_sets, follow_sets):
 
         for terminal in first_set:
             if parsing_table[i][terminal.value] == -1:
-                parsing_table[i][terminal.value] = rule
-
+                parsing_table[i][terminal.value] = i
             else:
-                # If there is already an entry, it means a conflict
                 raise ValueError(
                     f"Conflict in parsing table at [{i}, {terminal.value}]"
                 )
@@ -99,10 +81,8 @@ def construct_parsing_table(rules, first_sets, follow_sets):
         if Terminals.END in first_set:
             for terminal in follow_sets[i]:
                 if parsing_table[i][terminal.value] == -1:
-                    parsing_table[i][terminal.value] = rule
-
+                    parsing_table[i][terminal.value] = i
                 else:
-                    # If there is already an entry, it means a conflict
                     raise ValueError(
                         f"Conflict in parsing table at [{i}, {terminal.value}]"
                     )
@@ -110,12 +90,7 @@ def construct_parsing_table(rules, first_sets, follow_sets):
     return parsing_table
 
 
-def display_parsing_table(parsing_table):
-    """
-    Display the LL(1) parsing table.
-
-    :param parsing_table: 2D list representing the LL(1) parsing table.
-    """
+def display_parsing_table(parsing_table: List[List[int]]) -> None:
     for idx, row in enumerate(parsing_table):
         print(f"[{idx}] {row}")
 

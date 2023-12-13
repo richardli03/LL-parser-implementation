@@ -8,7 +8,7 @@ class LLParse:
     def __init__(self, table: [list[int]]) -> None:
         # Parse table
         self.table = [[1, -1, 0, -1, -1, -1], [-1, -1, 2, -1, -1, -1]]
-
+        # self.table = table
         pass
 
     def lexical_analysis(self, string_to_tokenize):
@@ -53,9 +53,9 @@ class LLParse:
                     print("pop", svalue)
                     if token == Terminals.END:
                         print("input accepted")
+                        return True
                 else:
-                    print("bad term on input:", token)
-                    break
+                    raise ValueError(f"bad term on input:, {token}")
             elif stype == RULE:
                 print("svalue", svalue.name, "token", token.name)
                 rule = self.table[svalue.value][token.value]
@@ -63,6 +63,7 @@ class LLParse:
                 for r in reversed(RULES[rule]):
                     stack.append(r)
             print("stack", stack)
+        return True
 
 
 if __name__ == "__main__":
@@ -70,6 +71,9 @@ if __name__ == "__main__":
     first_sets = calculate_first_sets(RULES)
     follow_sets = calculate_follow_sets(RULES, first_sets)
     parsing_table = construct_parsing_table(RULES, first_sets, follow_sets)
+
+    # print("Parsing Table:")
+    # display_parsing_table(parsing_table)
 
     parser = LLParse(parsing_table)
     parser.syntactic_analysis(parser.lexical_analysis(inputstring))
