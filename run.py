@@ -7,8 +7,8 @@ stack = [(TERM, Terminals.END), (RULE, Nonterminals.S)]
 class LLParse:
     def __init__(self, table: [list[int]]) -> None:
         # Parse table
-        self.table = [[1, -1, 0, -1, -1, -1], [-1, -1, 2, -1, -1, -1]]
-        # self.table = table
+        # self.table = [[1, -1, 0, -1, -1, -1], [-1, -1, 2, -1, -1, -1]]
+        self.table = table
         pass
 
     def lexical_analysis(self, string_to_tokenize):
@@ -67,7 +67,7 @@ class LLParse:
 
 
 if __name__ == "__main__":
-    inputstring = "(a+a)"
+    inputstring = "a"
     first_sets = calculate_first_sets(RULES)
     follow_sets = calculate_follow_sets(RULES, first_sets)
     parsing_table = construct_parsing_table(RULES, first_sets, follow_sets)
