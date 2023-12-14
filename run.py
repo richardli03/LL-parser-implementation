@@ -43,6 +43,7 @@ class LLParse:
         :param tokens: _description_
         :type tokens: _type_
         """
+
         position = 0
         while len(stack) > 0:
             (stype, svalue) = stack.pop()
@@ -55,11 +56,12 @@ class LLParse:
                         print("input accepted")
                         return True
                 else:
-                    raise ValueError(f"bad term on input:, {token}")
+                    print(f"bad term on input:, {token}")
+                    raise ValueError
             elif stype == RULE:
-                print("svalue", svalue.name, "token", token.name)
+                # print("svalue", svalue.name, "token", token.name)
                 rule = self.table[svalue.value][token.value]
-                print("rule", rule)
+                # print("rule", rule)
                 for r in reversed(RULES[rule]):
                     stack.append(r)
             print("stack", stack)
@@ -67,7 +69,8 @@ class LLParse:
 
 
 if __name__ == "__main__":
-    inputstring = "a"
+    # inputstring = "b*(a+a)" # TO SEE VALUE ERROR
+    inputstring = "(a+a)"
     first_sets = calculate_first_sets(RULES)
     follow_sets = calculate_follow_sets(RULES, first_sets)
     parsing_table = construct_parsing_table(RULES, first_sets, follow_sets)
