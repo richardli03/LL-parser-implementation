@@ -46,30 +46,30 @@ class LLParse:
 
         position = 0
         while len(stack) > 0:
-            (stype, svalue) = stack.pop()
+            (stack_type, stack_value) = stack.pop()
             token = tokens[position]
-            if stype == TERM:
-                if svalue == token:
+            if stack_type == TERM:
+                if stack_value == token:
                     position += 1
-                    print("pop", svalue)
+                    print("popping", stack_value)
                     if token == Terminals.END:
-                        print("input accepted")
+                        print("ACCEPT")
                         return True
                 else:
-                    print(f"bad term on input:, {token}")
-                    raise ValueError
-            elif stype == RULE:
-                # print("svalue", svalue.name, "token", token.name)
-                rule = self.table[svalue.value][token.value]
+                    print("REJECT")
+                    raise ValueError(f"{token}")
+            elif stack_type == RULE:
+                # print("stack_value", stack_value.name, "token", token.name)
+                rule = self.table[stack_value.value][token.value]
                 # print("rule", rule)
                 for r in reversed(RULES[rule]):
                     stack.append(r)
-            print("stack", stack)
+            print("current stack contains:", stack)
         return True
 
 
 if __name__ == "__main__":
-    # inputstring = "b*(a+a)" # TO SEE VALUE ERROR
+    # inputstring = "b*(a+a)"  # TO SEE VALUE ERROR
     inputstring = "(a+a)"
     first_sets = calculate_first_sets(RULES)
     follow_sets = calculate_follow_sets(RULES, first_sets)

@@ -5,6 +5,13 @@ from constants import TERM, RULE, Terminals, Nonterminals, RULES
 def calculate_first_sets(
     rules: List[List[Tuple[int, Union[Terminals, Nonterminals]]]]
 ) -> List[Set[Union[Terminals, Nonterminals]]]:
+    """Calculate the FIRST sets for each nonterminal in the grammar.
+
+    :param rules: List of production rules.
+    :type rules: List[List[Tuple[int, Union[Terminals, Nonterminals]]]]
+    :return: List of sets representing the FIRST sets for each nonterminal.
+    :rtype: List[Set[Union[Terminals, Nonterminals]]]
+    """
     first_sets = [set() for _ in range(len(rules))]
 
     while True:
@@ -32,6 +39,15 @@ def calculate_follow_sets(
     rules: List[List[Tuple[int, Union[Terminals, Nonterminals]]]],
     first_sets: List[Set[Union[Terminals, Nonterminals]]],
 ) -> List[Set[Union[Terminals, Nonterminals]]]:
+    """Calculate the FOLLOW sets for each nonterminal in the grammar.
+
+    :param rules: List of production rules.
+    :type rules: List[List[Tuple[int, Union[Terminals, Nonterminals]]]]
+    :param first_sets: List of FIRST sets for each nonterminal.
+    :type first_sets: List[Set[Union[Terminals, Nonterminals]]]
+    :return: List of sets representing the FOLLOW sets for each nonterminal.
+    :rtype: List[Set[Union[Terminals, Nonterminals]]]
+    """
     follow_sets = [set() for _ in range(len(rules))]
     follow_sets[Nonterminals.S.value].add(Terminals.END)
 
@@ -65,6 +81,18 @@ def construct_parsing_table(
     first_sets: List[Set[Union[Terminals, Nonterminals]]],
     follow_sets: List[Set[Union[Terminals, Nonterminals]]],
 ) -> List[List[int]]:
+    """Construct the LL(1) parsing table for the given grammar.
+
+    :param rules: List of production rules.
+    :type rules: List[List[Tuple[int, Union[Terminals, Nonterminals]]]]
+    :param first_sets: List of FIRST sets for each nonterminal.
+    :type first_sets: List[Set[Union[Terminals, Nonterminals]]]
+    :param follow_sets: List of FOLLOW sets for each nonterminal.
+    :type follow_sets: List[Set[Union[Terminals, Nonterminals]]]
+    :raises ValueError: Raised for conflicts in the parsing table.
+    :return: LL(1) parsing table.
+    :rtype: List[List[int]]
+    """
     parsing_table = [[-1] * len(Terminals) for _ in range(len(rules))]
 
     for i, rule in enumerate(rules):
