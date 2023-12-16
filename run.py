@@ -12,12 +12,12 @@ class LLParse:
         pass
 
     def lexical_analysis(self, string_to_tokenize):
-        """Tokenize a string to
+        """Tokenize a string for syntactic analysis.
 
-        :param string_to_analyze: _description_
-        :type string_to_analyze: _type_
-        :return: _description_
-        :rtype: _type_
+        :param string_to_tokenize: Input string to analyze.
+        :type string_to_tokenize: str
+        :return: Tokens for syntactic analysis.
+        :rtype: List[Union[Terminals, Nonterminals]]
         """
         tokens = []
         for character in string_to_tokenize:
@@ -36,12 +36,14 @@ class LLParse:
         return tokens
 
     def syntactic_analysis(self, tokens):
-        """Syntatically analyze the tokenization of a string
-        to determine whether to reject or accept the string based upon
-        our grammar.
+        """Syntactically analyze the tokenization of a string.
 
-        :param tokens: _description_
-        :type tokens: _type_
+        Determine whether to reject or accept the string based upon the grammar.
+
+        :param tokens: Tokens for syntactic analysis.
+        :type tokens: List[Union[Terminals, Nonterminals]]
+        :return: True if the string is accepted, False otherwise.
+        :rtype: bool
         """
 
         position = 0
