@@ -7,4 +7,4 @@ We won't add a verbose README here, because there really isn't any additional co
 2. run `python3 table.py` to see the ONLY the table construction happen
 3. run `pytest test_run.py` to automatically test the code with a bunch of inputs
 
-I suppose you'll need pytest to make this work fully. 
+Dependencies: pytest
